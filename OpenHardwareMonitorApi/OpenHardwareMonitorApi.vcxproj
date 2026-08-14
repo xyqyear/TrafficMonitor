@@ -99,7 +99,9 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="UserMacros">
+    <HardwareMonitorDependencyRoot>$(ProjectDir).deps\</HardwareMonitorDependencyRoot>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)..\include;$(IncludePath)</IncludePath>
@@ -197,7 +199,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="LibreHardwareMonitorLib">
-      <HintPath>LibreHardwareMonitorLib.dll</HintPath>
+      <HintPath Condition="'$(Platform)'=='Win32'">$(HardwareMonitorDependencyRoot)runtimes\win-x86\LibreHardwareMonitorLib.dll</HintPath>
+      <HintPath Condition="'$(Platform)'=='x64'">$(HardwareMonitorDependencyRoot)runtimes\win-x64\LibreHardwareMonitorLib.dll</HintPath>
+      <HintPath Condition="'$(Platform)'=='ARM64EC'">$(HardwareMonitorDependencyRoot)runtimes\win-arm64\LibreHardwareMonitorLib.dll</HintPath>
+      <Private>true</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -227,9 +232,34 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="PawnIO_README.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="THIRD-PARTY-NOTICES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ItemGroup>
+    <RuntimeAsset Include="$(HardwareMonitorDependencyRoot)BlackSharp.Core.dll" />
+    <RuntimeAsset Include="$(HardwareMonitorDependencyRoot)DiskInfoToolkit.dll" />
+    <RuntimeAsset Include="$(HardwareMonitorDependencyRoot)HidSharp.dll" />
+    <RuntimeAsset Include="$(HardwareMonitorDependencyRoot)LibreHardwareMonitorLib.xml" />
+    <RuntimeAsset Include="$(HardwareMonitorDependencyRoot)PawnIO_setup.exe" />
+    <RuntimeAsset Include="PawnIO_README.txt" />
+    <RuntimeAsset Include="$(HardwareMonitorDependencyRoot)RAMSPDToolkit-NDD.dll" />
+    <RuntimeAsset Include="$(HardwareMonitorDependencyRoot)System.Buffers.dll" />
+    <RuntimeAsset Include="$(HardwareMonitorDependencyRoot)System.Memory.dll" />
+    <RuntimeAsset Include="$(HardwareMonitorDependencyRoot)System.Numerics.Vectors.dll" />
+    <RuntimeAsset Include="$(HardwareMonitorDependencyRoot)System.Runtime.CompilerServices.Unsafe.dll" />
+    <RuntimeAsset Include="THIRD-PARTY-NOTICES.txt" />
+  </ItemGroup>
+  <Target Name="CopyRuntimeAssets" AfterTargets="Build">
+    <Copy SourceFiles="@(RuntimeAsset)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

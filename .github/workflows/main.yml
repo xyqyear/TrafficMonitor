@@ -4,19 +4,40 @@ on:
     tags: ['v*']
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
 
   x64_build:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v3
       
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
+
+    - name: Restore hardware monitor dependencies
+      shell: pwsh
+      run: ./scripts/Restore-HardwareMonitor.ps1
       
     - name: Run msbuild
       run: msbuild TrafficMonitor_Lite.sln -p:configuration="Release (lite)" -p:platform=x64 -p:platformToolset=v143
+
+    - name: Run standard msbuild
+      run: msbuild TrafficMonitor.sln -p:configuration=Release -p:platform=x64 -p:platformToolset=v143
+
+    - name: Package x64 release
+      id: package
+      shell: pwsh
+      run: |
+        $version = "${{ github.ref_name }}".TrimStart('v')
+        $package = "TrafficMonitor_${version}_x64_Lite.zip"
+        $files = Get-ChildItem -Path 'Bin/x64/Release (lite)' -File | Where-Object { $_.Name -eq 'TrafficMonitor.exe' -or $_.Extension -eq '.dll' }
+        if ($files.Count -eq 0) { throw 'No x64 release files found.' }
+        Compress-Archive -Path $files.FullName -DestinationPath $package -Force
+        "path=$package" >> $env:GITHUB_OUTPUT
       
     - name: Get current time
       uses: josStorer/get-current-time@v2.0.2
@@ -39,17 +60,58 @@ jobs:
         name: x64_${{ steps.current-time.outputs.formattedTime }}_pdb
         path: Bin/x64/Release (lite)/*.pdb
 
+    - name: Upload x64 release package
+      uses: actions/upload-artifact@v4
+      with:
+        name: x64_release_package
+        path: ${{ steps.package.outputs.path }}
+
+    - name: Package x64 standard release
+      id: package-standard
+      shell: pwsh
+      run: |
+        $version = "${{ github.ref_name }}".TrimStart('v')
+        $package = "TrafficMonitor_${version}_x64.zip"
+        $files = @(Get-ChildItem -Path 'Bin/x64/Release' -File | Where-Object { $_.Extension -notin @('.pdb', '.lib', '.exp') })
+        if ($files.Count -eq 0) { throw 'No x64 standard release files found.' }
+        Compress-Archive -Path $files.FullName -DestinationPath $package -Force
+        "path=$package" >> $env:GITHUB_OUTPUT
+
+    - name: Upload x64 standard release package
+      uses: actions/upload-artifact@v4
+      with:
+        name: x64_standard_release_package
+        path: ${{ steps.package-standard.outputs.path }}
+
   x86_build:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v3
       
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
+
+    - name: Restore hardware monitor dependencies
+      shell: pwsh
+      run: ./scripts/Restore-HardwareMonitor.ps1
       
     - name: Run msbuild
       run: msbuild TrafficMonitor_Lite.sln -p:configuration="Release (lite)" -p:platform=x86 -p:platformToolset=v143
+
+    - name: Run standard msbuild
+      run: msbuild TrafficMonitor.sln -p:configuration=Release -p:platform=x86 -p:platformToolset=v143
+
+    - name: Package x86 release
+      id: package
+      shell: pwsh
+      run: |
+        $version = "${{ github.ref_name }}".TrimStart('v')
+        $package = "TrafficMonitor_${version}_x86_Lite.zip"
+        $files = Get-ChildItem -Path 'Bin/Release (lite)' -File | Where-Object { $_.Name -eq 'TrafficMonitor.exe' -or $_.Extension -eq '.dll' }
+        if ($files.Count -eq 0) { throw 'No x86 release files found.' }
+        Compress-Archive -Path $files.FullName -DestinationPath $package -Force
+        "path=$package" >> $env:GITHUB_OUTPUT
       
     - name: Get current time
       uses: josStorer/get-current-time@v2.0.2
@@ -72,17 +134,58 @@ jobs:
         name: x86_${{ steps.current-time.outputs.formattedTime }}_pdb
         path: Bin/Release (lite)/*.pdb
 
+    - name: Upload x86 release package
+      uses: actions/upload-artifact@v4
+      with:
+        name: x86_release_package
+        path: ${{ steps.package.outputs.path }}
+
+    - name: Package x86 standard release
+      id: package-standard
+      shell: pwsh
+      run: |
+        $version = "${{ github.ref_name }}".TrimStart('v')
+        $package = "TrafficMonitor_${version}_x86.zip"
+        $files = @(Get-ChildItem -Path 'Bin/Release' -File | Where-Object { $_.Extension -notin @('.pdb', '.lib', '.exp') })
+        if ($files.Count -eq 0) { throw 'No x86 standard release files found.' }
+        Compress-Archive -Path $files.FullName -DestinationPath $package -Force
+        "path=$package" >> $env:GITHUB_OUTPUT
+
+    - name: Upload x86 standard release package
+      uses: actions/upload-artifact@v4
+      with:
+        name: x86_standard_release_package
+        path: ${{ steps.package-standard.outputs.path }}
+
   arm64ec_build:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v3
       
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
+
+    - name: Restore hardware monitor dependencies
+      shell: pwsh
+      run: ./scripts/Restore-HardwareMonitor.ps1
       
     - name: Run msbuild
       run: msbuild TrafficMonitor_Lite.sln -p:configuration="Release (lite)" -p:platform=ARM64EC -p:platformToolset=v143
+
+    - name: Run standard msbuild
+      run: msbuild TrafficMonitor.sln -p:configuration=Release -p:platform=ARM64EC -p:platformToolset=v143
+
+    - name: Package ARM64EC release
+      id: package
+      shell: pwsh
+      run: |
+        $version = "${{ github.ref_name }}".TrimStart('v')
+        $package = "TrafficMonitor_${version}_arm64ec_Lite.zip"
+        $files = Get-ChildItem -Path 'Bin/ARM64EC/Release (lite)' -File | Where-Object { $_.Name -eq 'TrafficMonitor.exe' -or $_.Extension -eq '.dll' }
+        if ($files.Count -eq 0) { throw 'No ARM64EC release files found.' }
+        Compress-Archive -Path $files.FullName -DestinationPath $package -Force
+        "path=$package" >> $env:GITHUB_OUTPUT
       
     - name: Get current time
       uses: josStorer/get-current-time@v2.0.2
@@ -107,3 +210,71 @@ jobs:
       with:
         name: arm64EC_${{ steps.current-time.outputs.formattedTime }}_pdb
         path: Bin/ARM64EC/Release (lite)/*.pdb
+
+    - name: Upload ARM64EC release package
+      uses: actions/upload-artifact@v4
+      with:
+        name: arm64ec_release_package
+        path: ${{ steps.package.outputs.path }}
+
+    - name: Package ARM64EC standard release
+      id: package-standard
+      shell: pwsh
+      run: |
+        $version = "${{ github.ref_name }}".TrimStart('v')
+        $package = "TrafficMonitor_${version}_arm64ec.zip"
+        $hardwareMonitorAssets = @(
+          'BlackSharp.Core.dll',
+          'DiskInfoToolkit.dll',
+          'HidSharp.dll',
+          'LibreHardwareMonitorLib.dll',
+          'LibreHardwareMonitorLib.xml',
+          'OpenHardwareMonitorApi.dll',
+          'PawnIO_setup.exe',
+          'RAMSPDToolkit-NDD.dll',
+          'System.Buffers.dll',
+          'System.Memory.dll',
+          'System.Numerics.Vectors.dll',
+          'System.Runtime.CompilerServices.Unsafe.dll'
+        )
+        $platformFiles = @(Get-ChildItem -Path 'Bin/ARM64EC/Release' -File | Where-Object { $_.Extension -notin @('.pdb', '.lib', '.exp') })
+        $hardwareMonitorFiles = @(Get-ChildItem -Path 'Bin/x64/Release' -File | Where-Object { $_.Name -in $hardwareMonitorAssets })
+        $missingAssets = @($hardwareMonitorAssets | Where-Object { $_ -notin $hardwareMonitorFiles.Name })
+        if ($platformFiles.Count -eq 0) { throw 'No ARM64EC standard release files found.' }
+        if ($missingAssets.Count -ne 0) { throw "Missing ARM64EC hardware monitor assets: $($missingAssets -join ', ')" }
+        $files = @($platformFiles) + @($hardwareMonitorFiles)
+        Compress-Archive -Path $files.FullName -DestinationPath $package -Force
+        "path=$package" >> $env:GITHUB_OUTPUT
+
+    - name: Upload ARM64EC standard release package
+      uses: actions/upload-artifact@v4
+      with:
+        name: arm64ec_standard_release_package
+        path: ${{ steps.package-standard.outputs.path }}
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    needs: [x64_build, x86_build, arm64ec_build]
+    permissions:
+      contents: write
+
+    steps:
+    - name: Download release packages
+      uses: actions/download-artifact@v4
+      with:
+        pattern: '*_release_package'
+        path: release-assets
+        merge-multiple: true
+
+    - name: Create or update GitHub Release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TAG_NAME: ${{ github.ref_name }}
+        REPOSITORY: ${{ github.repository }}
+      run: |
+        if gh release view "$TAG_NAME" --repo "$REPOSITORY" >/dev/null 2>&1; then
+          gh release upload "$TAG_NAME" release-assets/*.zip --repo "$REPOSITORY" --clobber
+        else
+          gh release create "$TAG_NAME" release-assets/*.zip --repo "$REPOSITORY" --title "$TAG_NAME" --generate-notes
+        fi

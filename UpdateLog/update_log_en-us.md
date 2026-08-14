@@ -1,6 +1,10 @@
 **[简体中文](./update_log.md) | [繁體中文](./update_log_zh-tw.md) | English**
 
 # TrafficMonitor Update log
+## V1.86-x.1(2026/08/14)
+
+- Updated LibreHardwareMonitorLib from 0.9.4 to 0.9.6. The bundled library no longer uses the vulnerable WinRing0 driver; install PawnIO separately to enable hardware monitoring.
+
 ## V1.86(2026/03/29)
 
 **New Features**

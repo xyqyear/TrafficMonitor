@@ -49,6 +49,17 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="PawnIO_setup.exe">
+      <Filter>资源文件</Filter>
+    </Content>
+    <Content Include="PawnIO_README.txt">
+      <Filter>资源文件</Filter>
+    </Content>
+    <Content Include="THIRD-PARTY-NOTICES.txt">
+      <Filter>资源文件</Filter>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <ResourceCompile Include="app.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>

@@ -298,5 +298,6 @@ __pycache__/
 [Rr]elease (lite)/
 /TrafficMonitor/compile_time.txt
 !/TrafficMonitor/language/*.ini
+OpenHardwareMonitorApi/.deps/
 *.diagsession
 enc_temp*

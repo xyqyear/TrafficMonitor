@@ -1,0 +1,67 @@
+{
+  "libreHardwareMonitor": {
+    "url": "https://api.nuget.org/v3-flatcontainer/librehardwaremonitorlib/0.9.6/librehardwaremonitorlib.0.9.6.nupkg",
+    "sha256": "60db5e0d9135f4658b385cae139d3b9eaeac0a8e867d322d20b5dbe4c4039197",
+    "files": [
+      {
+        "source": "runtimes/win-x86/lib/net472/LibreHardwareMonitorLib.dll",
+        "destination": "runtimes/win-x86/LibreHardwareMonitorLib.dll"
+      },
+      {
+        "source": "runtimes/win-x64/lib/net472/LibreHardwareMonitorLib.dll",
+        "destination": "runtimes/win-x64/LibreHardwareMonitorLib.dll"
+      },
+      {
+        "source": "runtimes/win-arm64/lib/net472/LibreHardwareMonitorLib.dll",
+        "destination": "runtimes/win-arm64/LibreHardwareMonitorLib.dll"
+      },
+      {
+        "source": "runtimes/win-x64/lib/net472/LibreHardwareMonitorLib.xml",
+        "destination": "LibreHardwareMonitorLib.xml"
+      }
+    ]
+  },
+  "runtimeDependencies": {
+    "url": "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases/download/v0.9.6/LibreHardwareMonitor.zip",
+    "sha256": "086d9f1b5a99e643edc2cfaaac16051685b551e4c5ac0b32a57c58c0e529c001",
+    "files": [
+      {
+        "source": "BlackSharp.Core.dll",
+        "destination": "BlackSharp.Core.dll"
+      },
+      {
+        "source": "DiskInfoToolkit.dll",
+        "destination": "DiskInfoToolkit.dll"
+      },
+      {
+        "source": "HidSharp.dll",
+        "destination": "HidSharp.dll"
+      },
+      {
+        "source": "RAMSPDToolkit-NDD.dll",
+        "destination": "RAMSPDToolkit-NDD.dll"
+      },
+      {
+        "source": "System.Buffers.dll",
+        "destination": "System.Buffers.dll"
+      },
+      {
+        "source": "System.Memory.dll",
+        "destination": "System.Memory.dll"
+      },
+      {
+        "source": "System.Numerics.Vectors.dll",
+        "destination": "System.Numerics.Vectors.dll"
+      },
+      {
+        "source": "System.Runtime.CompilerServices.Unsafe.dll",
+        "destination": "System.Runtime.CompilerServices.Unsafe.dll"
+      }
+    ]
+  },
+  "pawnIO": {
+    "url": "https://github.com/namazso/PawnIO.Setup/releases/download/2.1.0/PawnIO_setup.exe",
+    "sha256": "a3a46226c5e2824f4cdd42be0eecbabfc672c86f7889710f5ab1e6ad385b47a0",
+    "destination": "PawnIO_setup.exe"
+  }
+}
